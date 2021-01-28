@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+
+  richlist:
+    env_file:
+      - .env
+    build: .
+    ports:
+      - "8001:8001"
+    volumes:
+      - "./database/:/home/endpoint/database"
+    command: python richlist/main.py
