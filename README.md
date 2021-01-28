@@ -3,6 +3,9 @@
 ## Summary
 The Python programs in this repository are used to enable additional REST API endpoints. Using Docker and Docker Compose, these can be run directly on any Tradehub Sentry Node or on an extra server.
 
+## Requirements
+Docker and Docker Compose is currently the easiest and most convenient option, as all necessary dependencies are installed.
+
 ## Endpoints
 ### Richlist
 Richlist Endpoint allows querying the richest wallets for any known coin.
