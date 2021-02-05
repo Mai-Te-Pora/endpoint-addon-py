@@ -1,20 +1,20 @@
 import logging
 import os
-from typing import List, Optional
+from typing import List, Optional, Union
 from utils.exception import *
 import requests
 import json
 
 REQUEST_LOGGER = None
 
-REQUEST_CONNECT_TIMEOUT = float(os.getenv("REQUEST_CONNECT_TIMEOUT_SEC")) if os.getenv("REQUEST_CONNECT_TIMEOUT_SEC") else 1.0
-REQUEST_READ_TIMEOUT = float(os.getenv("REQUEST_READ_TIMEOUT_SEC")) if os.getenv("REQUEST_READ_TIMEOUT_SEC") else 1.0
+REQUEST_CONNECT_TIMEOUT = float(os.getenv("REQUEST_CONNECT_TIMEOUT_SEC")) if os.getenv("REQUEST_CONNECT_TIMEOUT_SEC") else 5.0
+REQUEST_READ_TIMEOUT = float(os.getenv("REQUEST_READ_TIMEOUT_SEC")) if os.getenv("REQUEST_READ_TIMEOUT_SEC") else 5.0
 
 
 def get_request_logger():
     global REQUEST_LOGGER
     if not REQUEST_LOGGER:
-        REQUEST_LOGGER = get_file_logger("request")
+        REQUEST_LOGGER = get_file_logger("request", file_log_level=logging.WARNING)
     return REQUEST_LOGGER
 
 
@@ -42,8 +42,8 @@ def request_get(path: str, base_uri: str, params: dict = None, retries: int = 3,
 
 
 def get_file_logger(name: str,
-                    terminal_log_level: Optional[str] = logging.INFO,
-                    file_log_level: Optional[str] = logging.INFO):
+                    terminal_log_level: Optional[Union[str, int]] = logging.INFO,
+                    file_log_level: Optional[Union[str, int]] = logging.INFO):
 
     path: str = create_sub_dir(["database", "logs"])
 
@@ -54,15 +54,16 @@ def get_file_logger(name: str,
     stream_handler.setLevel(terminal_log_level)
 
     # create formatter
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    stream_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     # add formatter to ch
-    stream_handler.setFormatter(formatter)
+    stream_handler.setFormatter(stream_formatter)
 
     # add ch to logger
     logger.addHandler(stream_handler)
 
     file_handler = logging.FileHandler(f"{path}/{name}.log")
-    file_handler.setFormatter(formatter)
+    file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(file_formatter)
     file_handler.setLevel(file_log_level)
     logger.addHandler(file_handler)
 
