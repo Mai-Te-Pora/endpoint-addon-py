@@ -2,7 +2,7 @@ from typing import Optional
 from utils import request_get
 import os
 
-REST_BASE_URI = os.getenv("BASE_URI_REST") or "http://85.214.91.220:5002"
+REST_BASE_URI = os.getenv("BASE_URI_REST") or "http://85.214.81.155:5002"
 
 
 def get_blocks(limit: Optional[int] = 200):
@@ -23,3 +23,7 @@ def get_profile(address: str):
 
 def get_tokens():
     return request_get("/get_tokens", base_uri=REST_BASE_URI)
+
+
+def get_liquidity_pools():
+    return request_get("/get_liquidity_pools", base_uri=REST_BASE_URI)
