@@ -1,5 +1,7 @@
+import datetime
 import logging
 import os
+import time
 from typing import List, Optional, Union
 from utils.exception import *
 import requests
@@ -45,7 +47,7 @@ def get_file_logger(name: str,
                     terminal_log_level: Optional[Union[str, int]] = logging.INFO,
                     file_log_level: Optional[Union[str, int]] = logging.INFO):
 
-    path: str = create_sub_dir(["database", "logs"])
+    path: str = create_sub_dir(["..", "database", "logs"])
 
     logger = logging.getLogger(name)
     logger.setLevel(terminal_log_level)
@@ -79,11 +81,27 @@ def create_sub_dir(path_parts: List[str]):
     return os.path.abspath(os.path.join(*path_parts))
 
 
-def load_files(path: str, extension: Optional[str] = ".json"):
+def path_parts_to_abs_path(path_parts: List[str]) -> str:
+    return os.path.abspath(os.path.join(*path_parts))
+
+
+def directory_exists(path: str) -> bool:
+    return os.path.isdir(path)
+
+
+def file_exists(path: str) -> bool:
+    return os.path.isfile(path)
+
+
+def files_in_path(path: str):
     if not os.path.isdir(path):
         raise NotADirectoryError(f"Directory not found: {path}")
 
-    files = [os.path.join(path, f) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    return [os.path.join(path, f) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+
+def load_files(path: str, extension: Optional[str] = ".json"):
+    files = files_in_path(path)
 
     for filename in files:
         if extension and filename.endswith(filename):
@@ -91,8 +109,38 @@ def load_files(path: str, extension: Optional[str] = ".json"):
                 yield file.read()
 
 
+def load_file(path: str):
+    if os.path.isfile(path):
+        with open(path, "r") as file:
+            return file.read()
+    return None
+
+
 def save_file(path: str, name: str, content: str):
     if os.path.isdir(path):
         path: str = os.path.join(path, name)
         with open(path, "w") as file:
             file.write(content)
+
+
+def timestamp_to_epoch_seconds(timestamp: str):
+    if timestamp.find("+") != -1:
+        date_split: list = timestamp.split("+")
+        utc_offset: str = date_split[1].replace(":", "")
+        datetime_str: str = date_split[0]
+    else:
+        utc_offset: str = "0000"
+        datetime_str: str = timestamp
+    if datetime_str.endswith("Z"):
+        datetime_str = datetime_str[:-1]
+    if datetime_str.find(".") == -1:
+        datetime_str = datetime_str + ".000000"
+    else:
+        datetime_str = datetime_str[:datetime_str.find(".")+6]
+    datetime_str = f"{datetime_str}+{utc_offset}"
+    time_obj = datetime.datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%f%z')
+    return time_obj.timestamp()
+
+
+def epoch_seconds_to_local_timestamp(seconds: float):
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(seconds))
