@@ -12,8 +12,7 @@ API_ROUTER = APIRouter()
 @API_ROUTER.get("/get_denoms", response_class=JSONResponse, response_model=RichListGetDenoms)
 async def get_denoms():
     """
-    Request currently managed coins.
-    :return: List with denoms, which can be used for the other endpoints.
+    Request currently managed coins. To all returned coins there is a richlist available.
     """
     data = {
         "denoms": list(SHARED_MEMORY_DICT.keys())
@@ -26,11 +25,7 @@ async def get_rich_list(denom: str = Path("swth", min_length=3, description="Req
                         limit: int = Query(10, ge=1, le=100, description="Limit the response result."),
                         offset: int = Query(0, ge=0, description="Request result with offset.")):
     """
-    Request the richlist for a denom.
-    :param denom: requested denom.
-    :param limit: limit the responses.
-    :param offset: offset the response.
-    :return: dict with richlist information
+    Request the richlist for a denom. The returned list is sorted by total balance.
     """
     if denom not in SHARED_MEMORY_DICT.keys():
         data = {

@@ -12,6 +12,16 @@ if __name__ == "__main__":
     update_block_height_thread = Thread(target=update_block_height)
     update_block_height_thread.setName("RichList Block Height Thread")
     update_block_height_thread.start()
-    app = FastAPI()
-    app.include_router(richlist.endpoint.API_ROUTER, prefix="/richlist", tags=["Richlist"])
+    tags_metadata = [
+        {
+            "name": "RichList",
+            "description": "Tracks all staking wallets and sort them by their total balance per coin.",
+            "version": "0.1.0"
+        }
+    ]
+    app = FastAPI(title="Additional Tradehub Python API Endpoints",
+                  description="The default API endpoints are lacking of some few interesting data or do not allow simple requests. These endpoints are designed to provide simple to use data.",
+                  version="0.1.0",
+                  openapi_tags=tags_metadata)
+    app.include_router(richlist.endpoint.API_ROUTER, prefix="/richlist", tags=["RichList"])
     uvicorn.run(app, host="0.0.0.0", port=8001, loop="asyncio")
