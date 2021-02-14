@@ -10,3 +10,13 @@ services:
     volumes:
       - "./database/:/home/endpoint/database"
     command: python richlist/main.py
+
+  price:
+    env_file:
+      - .env
+    build: .
+    ports:
+      - "8002:8002"
+    volumes:
+      - "./database/:/home/endpoint/database"
+    command: python price/main.py

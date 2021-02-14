@@ -65,6 +65,10 @@ def update_richlist():
         try:
             # get current block
             block: dict = BLOCK
+            if not BLOCK:
+                LOGGER.info(f"Current block not fetched yet! Sleep 5 sec.")
+                time.sleep(5)
+                continue
             block_height: int = int(block['block_height'])
             block_time: str = block['time']
             LOGGER.info(f"Current block {block_height} - {block_time}")

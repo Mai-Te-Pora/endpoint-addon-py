@@ -5,6 +5,7 @@ from utils import load_file, get_file_logger, epoch_seconds_to_local_timestamp, 
     files_in_path, timestamp_to_epoch_seconds, path_parts_to_abs_path, directory_exists, file_exists
 from utils.coingecko import get_historical_price, get_price
 from utils.exception import RequestTimedOut
+from price.coins import COINS
 import os
 import urllib3
 # disable coingecko warnings
@@ -175,8 +176,8 @@ def load_prices_til_now(coin: str, start_time: Optional[float] = None):
 
 
 def load_predefined_coins():
-    global DENOM_TO_NAME, NAME_TO_DENOMS
-    coins = load_file("coins.json")
+    global DENOM_TO_NAME, NAME_TO_DENOMS, COINS
+    """coins = load_file("coins.json")
     if not coins:
         raise RuntimeError("Could not load the initial coin list! coins.json is missing")
 
@@ -184,7 +185,9 @@ def load_predefined_coins():
         coins = json.loads(coins)
     except json.JSONDecodeError:
         LOGGER.warning("Could not parse coins.json")
-        return
+        return"""
+
+    coins = COINS
 
     # make first a local dict and change reference
     name_to_denoms = {}

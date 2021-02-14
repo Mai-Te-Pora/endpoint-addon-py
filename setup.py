@@ -2,5 +2,5 @@ from setuptools import setup
 
 setup(
     name='endpoint-addon',
-    packages=["richlist", "utils"]
+    packages=["richlist", "price", "utils"]
 )
