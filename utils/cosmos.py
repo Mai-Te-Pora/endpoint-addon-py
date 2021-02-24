@@ -1,7 +1,7 @@
 from utils import request_get
 import os
 
-COSMOS_BASE_URI = os.getenv("BASE_URI_COSMOS") or "http://85.214.81.155:1318"
+COSMOS_BASE_URI = os.getenv("BASE_URI_COSMOS") or "http://164.132.169.19:1318"
 
 
 def get_delegator_unbonding_delegations(address: str):

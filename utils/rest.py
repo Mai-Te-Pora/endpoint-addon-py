@@ -2,7 +2,7 @@ from typing import Optional
 from utils import request_get
 import os
 
-REST_BASE_URI = os.getenv("BASE_URI_REST") or "http://85.214.81.155:5002"
+REST_BASE_URI = os.getenv("BASE_URI_REST") or "http://164.132.169.19:5002"
 
 
 def get_blocks(limit: Optional[int] = 200):

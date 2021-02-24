@@ -100,7 +100,7 @@ async def api_get_historic_price_timestamp(denom: str, timestamp: str):
 def main_current_price():
     global SHARED_MEMORY_DICT
     coins = list(NAME_TO_DENOMS.keys())
-    vs_currencies = [VS_CURRENCY, "eur"]
+    vs_currencies = [VS_CURRENCY, "eur", "btc", "eth"]
 
     while True:
         prices = get_price(coins, vs_currencies)
@@ -110,7 +110,7 @@ def main_current_price():
             for denom in denoms:
                 denom_price[denom] = {}
                 for vs_currency in prices[name]:
-                    denom_price[denom][vs_currency] = f"{prices[name][vs_currency]}"
+                    denom_price[denom][vs_currency] = "%.8f" % prices[name][vs_currency]
         SHARED_MEMORY_DICT["current"]["prices"] = denom_price
         SHARED_MEMORY_DICT["current"]["epoch_seconds"] = f"{time.time()}"
         time.sleep(60)
