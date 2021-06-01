@@ -199,3 +199,7 @@ def load_predefined_coins():
 
     DENOM_TO_NAME = coins
     NAME_TO_DENOMS = name_to_denoms
+
+
+def create_tables(db_config):
+    pass

@@ -3,6 +3,9 @@ import logging
 import os
 import time
 from typing import List, Optional, Union
+
+from iso8601 import parse_date
+
 from utils.exception import *
 import requests
 import json
@@ -124,22 +127,7 @@ def save_file(path: str, name: str, content: str):
 
 
 def timestamp_to_epoch_seconds(timestamp: str):
-    if timestamp.find("+") != -1:
-        date_split: list = timestamp.split("+")
-        utc_offset: str = date_split[1].replace(":", "")
-        datetime_str: str = date_split[0]
-    else:
-        utc_offset: str = "0000"
-        datetime_str: str = timestamp
-    if datetime_str.endswith("Z"):
-        datetime_str = datetime_str[:-1]
-    if datetime_str.find(".") == -1:
-        datetime_str = datetime_str + ".000000"
-    else:
-        datetime_str = datetime_str[:datetime_str.find(".")+6]
-    datetime_str = f"{datetime_str}+{utc_offset}"
-    time_obj = datetime.datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%f%z')
-    return time_obj.timestamp()
+    return parse_date(timestamp).timestamp()
 
 
 def epoch_seconds_to_local_timestamp(seconds: float):

@@ -1,15 +1,28 @@
 version: "3.8"
 services:
-
-  richlist:
-    env_file:
-      - .env
-    build: .
+  postgres:
+    image: postgres
+    hostname: postgres
     ports:
-      - "8001:8001"
+      - "5432"
+    environment:
+      POSTGRES_USER: demex
+      POSTGRES_PASSWORD: 1qw23er4
+      POSTGRES_DB: demex_trading
     volumes:
-      - "./database/:/home/database"
-    command: python richlist/main.py
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    ports:
+      - "5555:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@mail.de
+      PGADMIN_DEFAULT_PASSWORD: 1qw23er4
+    restart: unless-stopped
 
   price:
     env_file:
@@ -17,6 +30,28 @@ services:
     build: .
     ports:
       - "8002:8002"
-    volumes:
-      - "./database/:/home/database"
-    command: python price/main.py
+    command: python price/data_fetcher.py
+    depends_on:
+      - postgres
+
+  trading-backend:
+    env_file:
+      - .env
+    build: .
+    command: python trading/data_fetcher.py
+    depends_on:
+      - postgres
+      - price
+
+  trading-api:
+    env_file:
+      - .env
+    build: .
+    ports:
+      - "8003:8003"
+    command: python trading/main.py
+    depends_on:
+      - trading-backend
+
+volumes:
+  postgres-data:
